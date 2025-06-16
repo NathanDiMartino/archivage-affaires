@@ -75,6 +75,7 @@ Ce script contient **une fonction** :
 - ii. **Les mandats passés en paramètre doivent exister dans le dossier source `chemin`, en tant que sous-dossiers d'un dossier affaire**, sinon les mandats ne seront pas trouvés par l'application, qui continuera son execution sans prendre en compte les mandats en question.
 - iii. **Les mandats ont un nom strictement sous la forme X-Y** (n'importe quelle suite de caractère non nulle, puis un tiret, puis n'importe que suite de caractère) et **les dossiers affaire parents ont un nom strictement sous la forme X** (ce qu'il y a avant le tiret du mandat), sinon les mandats ne seront pas trouvés par l'application, qui continuera son execution sans prendre en compte les mandats en question.
 
+
 | Hypothèse     | Exception levée | Mandats marqués comme "prêt à être archivés" |
 | ------------- | --------------- | -------------------------------------------- |
 | i.            | ✔️              | ❌                                          |
@@ -91,10 +92,11 @@ Ce script contient **deux fonctions** :
 
 - i. **L'utilisateur a accès au dossier source `chemin` (par défaut, "*H:*") et au dossier d'archivage `chemin_archivage` (par défaut, "*Z\Affaires:*"), et peut donc lire `chemin` et écrire dans `chemin_archivage`**, sinon l'application lèvera une exception au moment de copier les mandats et de sauvegarder le log.
 - ii. **Les mandats à archiver doivent exister dans le dossier source `chemin`, en tant que sous-dossiers d'un dossier affaire**, sinon les mandats ne seront pas trouvés par l'application, qui continuera son execution sans prendre en compte les mandats en question.
-- iii. **Les dossiers articles sont de la forme _X** (un underscore, puis n'importe quelle suite de caractère), sinon les dossiers articles ne seornt pas archivés et copiés dans le dossier d'archivage.
+- iii. **Les dossiers articles sont de la forme _X** (un underscore, puis n'importe quelle suite de caractère), sinon les dossiers articles ne seront pas archivés et copiés dans le dossier d'archivage.
 
-| Hypothèse     | Exception levée | Mandats copiés dans `chemin_archivage` | Dossier articles copié dans `chemin_archivage` | 
-| ------------- | --------------- | -------------------------------------- | -------------------------------------- |
-| i.            | ✔️              | ❌                                    | ❌                                    |
-| ii.           | ❌              | ❌                                    | ❌                                    |
-| iii.          | ❌              | ✔️                                    | ❌                                    |
+
+| Hypothèse     | Exception levée | Mandats lus depuis `chemin` | Mandats copiés dans `chemin_archivage` | Dossier articles copié dans `chemin_archivage` | 
+| ------------- | --------------- | --------------------------- | -------------------------------------- | ---------------------------------------------- |
+| i.            | ✔️              | ❌                         | ❌                                     | ❌                                            |
+| ii.           | ❌              | ❌                         | ✔️                                     | ❌                                            |
+| iii.          | ❌              | ✔️                         | ✔️                                     | ❌                                            |
