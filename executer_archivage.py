@@ -224,14 +224,14 @@ if __name__ == "__main__":
     Retourne une liste des mandats prêts pour archivage.
     Un mandat est considérée prêt à être archivé si l'attribut "Le dossier est prêt à être archivé" est coché pour le dossier.
                                      
-    :param chemin: Chemin du dossier contenant les affaires (par défaut C:\\Users\\nathan.dimartino\\Documents\\H\\).
-    :param chemin_archive: Chemin du dossier d'archivage (par défaut C:\\Users\\nathan.dimartino\\Documents\\Z\\Affaires\\).
+    :param chemin: Chemin du dossier contenant les affaires (par défaut H:\\).
+    :param chemin_archive: Chemin du dossier d'archivage (par défaut Z:\\Affaires\\).
                                      
     Usage : python executer_archivage.py [chemin] [chemin_archive]
     """)
     
-    parser.add_argument("--chemin", type=str, default="C:\\Users\\nathan.dimartino\\Documents\\H\\", help="Chemin du dossier contenant les affaires (par défaut C:\\Users\\nathan.dimartino\\Documents\\H\\)")
-    parser.add_argument("--chemin_archive", type=str, default="C:\\Users\\nathan.dimartino\\Documents\\Z\\Affaires\\", help="Chemin du dossier où archiver les mandats (par défaut C:\\Users\\nathan.dimartino\\Documents\\Z\\Affaires\\)")
+    parser.add_argument("--chemin", type=str, default="H:\\", help="Chemin du dossier contenant les affaires (par défaut H:\\)")
+    parser.add_argument("--chemin_archive", type=str, default="Z:\\Affaires\\", help="Chemin du dossier où archiver les mandats (par défaut Z:\\Affaires\\)")
     args = parser.parse_args()
 
     mandats_archives, mandats_non_archives = archivage(args.chemin, args.chemin_archive)
