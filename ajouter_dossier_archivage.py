@@ -5,29 +5,6 @@ import argparse
 import datetime
 
 
-def barre_de_progression(pourcentage, curseur, longueur=100, temps_depart=None, affichage_temps_restant=False):
-    """
-    Affiche une barre de progression dans la console.
-    
-    :param pourcentage: Le pourcentage d'avancement (0 à 100).
-    :param longueur: La longueur de la barre de progression.
-    :param temps_restant: Temps restant estimé en secondes (optionnel).
-    """
-
-    barre = "█" * int(pourcentage / 100 * longueur)
-    espace = " " * (longueur - len(barre))
-
-    # Calcul du temps restant si le temps de départ est fourni
-    if temps_depart is not None and affichage_temps_restant:
-        temps_ecoule = time.time() - temps_depart
-        temps_restant = temps_ecoule * (100 - pourcentage) / pourcentage if pourcentage > 0 else None
-
-    if affichage_temps_restant:
-        print(f"\r{curseur} |{barre}{espace}| {pourcentage:.2f}% - Temps restant : {int(round(temps_restant)) // 60} min {temps_restant - (int(round(temps_restant)) // 60) * 60:.0f} s", end=30 * " ")
-    else:
-        print(f"\r{curseur} |{barre}{espace}| {pourcentage:.2f}%", end=30 * " ")
-
-
 def pret_a_archiver(liste_mandats, chemin):
     """
     Pour tous les mandats dans liste_mandats, sélectionne le dossier du mandat et coche l'attribut "Le dossier est prêt à être archiver"

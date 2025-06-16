@@ -61,3 +61,40 @@ Pour mettre à jour les mandats à archiver, cocher l'attribut "Le dossier est p
 ```bash
 python ajouter_dossier_archivage.py mandat1 mandat2 mandat3...
 ```
+
+## 5. Aide sur les fonctions et les paramètres
+
+### 5.1 Script `ajouter_dossier_archivage.py`
+
+Ce script contient **une fonction** :
+- `pret_a_archiver(liste_mandats, chemin)`: Ajoute l'attribut "Le dossier est prêt à être archivé" aux mandats passés en paramètre dans `liste_mandats` et contenus dans le dossier source `chemin`.
+
+#### Hypothèse d'utilisation et limites:
+
+- i. **L'utilisateur a accès au dossier source `chemin` (par défaut, "*H:*"), et peut donc lire et écrire dans ce dossier**, sinon l'application lèvera une exception au moment de sauvegarder le log.
+- ii. **Les mandats passés en paramètre doivent exister dans le dossier source `chemin`, en tant que sous-dossiers d'un dossier affaire**, sinon les mandats ne seront pas trouvés par l'application, qui continuera son execution sans prendre en compte les mandats en question.
+- iii. **Les mandats ont un nom strictement sous la forme X-Y** (n'importe quelle suite de caractère non nulle, puis un tiret, puis n'importe que suite de caractère) et **les dossiers affaire parents ont un nom strictement sous la forme X** (ce qu'il y a avant le tiret du mandat), sinon les mandats ne seront pas trouvés par l'application, qui continuera son execution sans prendre en compte les mandats en question.
+
+| Hypothèse     | Exception levée | Mandats marqués comme "prêt à être archivés" |
+| ------------- | --------------- | -------------------------------------------- |
+| i.            | ✔️              | ❌                                          |
+| ii.           | ❌              | ❌                                          |
+| iii.          | ❌              | ❌                                          |
+
+### 5.2 Script `executer_archivage.py`
+
+Ce script contient **deux fonctions** :
+- `archivage(chemin, chemin_archive)`: Archive tous les mandats marqués comme "prêt à être archivé" dans le dossier source `chemin`, et les copie dans le dossier d'archive `chemin_archive`.
+- `barre_de_progression(pourcentage, curseur, longueur=100, temps_depart=None, affichage_temps_restant=False)`: Affiche une barre de progression dans la console (utile uniquement dans le terminal pour voir l'avancement de l'archivage).
+
+#### Hypothèse d'utilisation et limites:
+
+- i. **L'utilisateur a accès au dossier source `chemin` (par défaut, "*H:*") et au dossier d'archivage `chemin_archivage` (par défaut, "*Z\Affaires:*"), et peut donc lire `chemin` et écrire dans `chemin_archivage`**, sinon l'application lèvera une exception au moment de copier les mandats et de sauvegarder le log.
+- ii. **Les mandats à archiver doivent exister dans le dossier source `chemin`, en tant que sous-dossiers d'un dossier affaire**, sinon les mandats ne seront pas trouvés par l'application, qui continuera son execution sans prendre en compte les mandats en question.
+- iii. **Les dossiers articles sont de la forme _X** (un underscore, puis n'importe quelle suite de caractère), sinon les dossiers articles ne seornt pas archivés et copiés dans le dossier d'archivage.
+
+| Hypothèse     | Exception levée | Mandats copiés dans `chemin_archivage` | Dossier articles copié dans `chemin_archivage` | 
+| ------------- | --------------- | -------------------------------------- | -------------------------------------- |
+| i.            | ✔️              | ❌                                    | ❌                                    |
+| ii.           | ❌              | ❌                                    | ❌                                    |
+| iii.          | ❌              | ✔️                                    | ❌                                    |
