@@ -1,6 +1,5 @@
 import os
 import ctypes
-import time
 import argparse
 import datetime
 
