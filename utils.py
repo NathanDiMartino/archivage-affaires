@@ -97,9 +97,6 @@ def comparer_deux_dossiers(dossier1, dossier2):
     return True
 
 
-print(comparer_deux_dossiers("C:\\Users\\nathan.dimartino\\Documents\\Archivage affaires\\H\\2257\\2257-19", "C:\\Users\\nathan.dimartino\\Documents\\Archivage affaires\\H\\2257\\2257-19 - Copie"))
-
-
 def archivage(liste_mandats, chemin_archive):
     """
     Retourne une liste des mandats prêts pour archivage.
