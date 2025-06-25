@@ -5,6 +5,8 @@ import shutil
 import zipfile
 import time
 import datetime
+import pandas as pd
+from docx import Document
 
 
 def liste_mandat_a_archiver(chemin):
@@ -247,6 +249,84 @@ def archivage(liste_mandats, chemin_archive):
     print(f"\nFin de l'archivage de tous les mandats\nTemps écoulé : {int(round(fin - debut)) // 3600} h {(fin - debut) - (int(round(fin - debut)) // 3600) * 60:.0f} min {(fin - debut) - ((fin - debut) - (int(round(fin - debut)) // 3600) * 60) * 60:.0f}.\n")
 
     return mandats_non_archives
+
+
+def charger_liste_mandats(chemin, separateur=None, en_tete=False, colonne=None):
+    """
+    Charge un fichier txt, docx, xlsx, csv.
+
+    :param chemin: Chemin du fichier.
+    :param separateur: Séparateur pour les fichiers txt, docx ou csv 
+    """
+
+    extension = chemin.split(".")[-1]
+
+    match extension:
+        case x if x in ["xlsx", "xlsm"]:
+            try:
+                if en_tete:
+                    df = pd.read_excel(chemin)
+                else:
+                    df = pd.read_excel(chemin, header=None)
+                    
+                if len(df.columns) > 1:
+                    liste_mandats = list(df[colonne])
+                else:
+                    liste_mandats = list(df[df.columns[0]])
+
+            except Exception as e:
+                raise e
+            
+        case x if x in ["csv", "CSV"]:
+            try:
+                if en_tete:
+                    df = pd.read_csv(chemin, sep=separateur)
+                else:
+                    df = pd.read_csv(chemin, sep=separateur, header=None)
+                
+                if len(df.columns) > 1:
+                    liste_mandats = list(df[colonne])
+                else:
+                    liste_mandats = list(df[df.columns[0]])
+
+            except Exception as e:
+                raise e
+            
+        case "docx":
+            try:
+                doc = Document(chemin)
+
+                texte = ""
+                for para in doc.paragraphs:
+                    texte = texte + "\n" + para.text
+                
+                texte = texte[1:]
+
+                liste_mandats = texte.split(separateur)
+            
+            except Exception as e:
+                raise e
+            
+        case "txt":
+            try:
+                with open(chemin, "r", encoding="utf-8") as fichier:
+                    lignes = fichier.readlines()
+
+                texte = ""
+                for ligne in lignes:
+                    texte = texte + ligne
+
+                texte = texte[1:]
+
+                liste_mandats = texte.split(separateur)
+
+            except Exception as e:
+                raise e
+            
+        case _:
+            raise ValueError(f"Les fichiers \"{extension}\" ne sont pas pris en compte.")
+        
+    return liste_mandats
 
 
 def a_archiver(liste_mandats, chemin):
