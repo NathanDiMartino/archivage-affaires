@@ -1,0 +1,5 @@
+pyproject.toml
+tkinter_custom_classes_ndm/tkinter_custom_classes_ndm.egg-info/PKG-INFO
+tkinter_custom_classes_ndm/tkinter_custom_classes_ndm.egg-info/SOURCES.txt
+tkinter_custom_classes_ndm/tkinter_custom_classes_ndm.egg-info/dependency_links.txt
+tkinter_custom_classes_ndm/tkinter_custom_classes_ndm.egg-info/top_level.txt

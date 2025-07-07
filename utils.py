@@ -99,7 +99,7 @@ def comparer_deux_dossiers(dossier1, dossier2):
     return True
 
 
-def archivage(liste_mandats, chemin_archive):
+def archivage(liste_mandats, chemin, chemin_archive, application):
     """
     Retourne une liste des mandats prêts pour archivage.
     Un mandat est considérée prêt à être archivé si l'attribut "Le dossier est prêt à être archivé" est coché pour le dossier.
@@ -127,17 +127,20 @@ def archivage(liste_mandats, chemin_archive):
         raise FileNotFoundError(f"Le chemin spécifié n'existe pas : {chemin_archive}")
 
     # Liste des affaires déjà visitées pour stocker le zip
-    affaires = {dossier_mandat[1].split("\\")[-2]: "" for dossier_mandat in liste_mandats}
+    affaires = {dossier_mandat.split("\\")[-2]: "" for _, dossier_mandat in liste_mandats}
     # Liste des mandats pour lesquels l'archivage a échoué
     mandats_non_archives = []
 
     # Parcours des mandats
     for mandat, dossier_mandat in liste_mandats:
 
+        if application.statut != "working":
+            break
+
         debut_archivage_tot = time.time()
 
-        affaire = dossier_mandat[1].split("\\")[-2]
-        chemin = dossier_mandat[1].split(affaire + "\\" + mandat)[0]
+        affaire = dossier_mandat.split("\\")[-2]
+        chemin = dossier_mandat.split(affaire + "\\" + mandat)[0]
 
         # On récupère le dossier Articles (s'il existe)
         dossier_articles = [dossier for dossier in os.listdir(os.path.join(chemin, affaire)) if dossier.startswith("_")]
@@ -248,6 +251,16 @@ def archivage(liste_mandats, chemin_archive):
         f.write(log)
     print(f"\nFin de l'archivage de tous les mandats\nTemps écoulé : {int(round(fin - debut)) // 3600} h {(fin - debut) - (int(round(fin - debut)) // 3600) * 60:.0f} min {(fin - debut) - ((fin - debut) - (int(round(fin - debut)) // 3600) * 60) * 60:.0f}.\n")
 
+    application.bouton_archiver.set_state("normal" if len(application.liste_mandats_a_archiver) > 0 else "disabled")
+    application.bouton_stop.set_state("disabled")
+    application.bouton_kill.set_state("disabled")
+
+    application.statut = "sleep"
+
+    application.maj_mandats_a_archiver()
+    application.bouton_stop.stop()
+    application.bouton_archiver.stop()
+
     return mandats_non_archives
 
 
@@ -270,7 +283,7 @@ def charger_liste_mandats(chemin, separateur=None, en_tete=False, colonne=None):
                     df = pd.read_excel(chemin, header=None)
                     
                 if len(df.columns) > 1:
-                    liste_mandats = list(df[colonne])
+                    liste_mandats = list(df[df.columns[colonne]])
                 else:
                     liste_mandats = list(df[df.columns[0]])
 
@@ -284,8 +297,10 @@ def charger_liste_mandats(chemin, separateur=None, en_tete=False, colonne=None):
                 else:
                     df = pd.read_csv(chemin, sep=separateur, header=None)
                 
+                print(colonne)
+
                 if len(df.columns) > 1:
-                    liste_mandats = list(df[colonne])
+                    liste_mandats = list(df[df.columns[colonne]])
                 else:
                     liste_mandats = list(df[df.columns[0]])
 
@@ -315,8 +330,6 @@ def charger_liste_mandats(chemin, separateur=None, en_tete=False, colonne=None):
                 texte = ""
                 for ligne in lignes:
                     texte = texte + ligne
-
-                texte = texte[1:]
 
                 liste_mandats = texte.split(separateur)
 
@@ -357,7 +370,11 @@ def a_archiver(liste_mandats, chemin):
     mandats_non_archives = []
 
     # Parcours des mandats
+    i = 0
+    n = len(liste_mandats)
+
     for mandat in liste_mandats:
+        mandat = liste_mandats[i]
         dossier_mandat = os.path.join(chemin, mandat.split("-")[0], mandat)
 
         # Vérification que le dossier du mandat existe
